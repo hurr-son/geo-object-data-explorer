@@ -23,11 +23,8 @@
     <script src="https://unpkg.com/leaflet.vectorgrid@1.3.0/dist/Leaflet.VectorGrid.bundled.js"></script>
 
     <script>
-        // Initialize the map
-        var map = L.map('map').setView([27.900,  -82.453], 14); // Set zoom level as needed
+        var map = L.map('map').setView([27.900,  -82.453], 14);
 
-
-        // Add a base layer
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 20,
             attribution: '© OpenStreetMap contributors'
@@ -44,8 +41,7 @@
         .then(response => response.json())
         .then(data => {
             console.log("GeoJSON Data:", data);
-    
-            // Add the GeoJSON layer to the map
+     
             const geoJsonLayer = L.geoJSON(data, {
                 style: function (feature) {
                     return {
@@ -56,15 +52,8 @@
                     };
                 }
             }).addTo(map);
-    
-        
         })
         .catch(error => console.error("Error loading GeoJSON:", error));
-    
-
-
-    
-
         
     </script>
 </body>
