@@ -9,13 +9,11 @@ import logging
 
 logging.basicConfig(level=logging.DEBUG)
 
-
 app = FastAPI(title="My simple app")
 
-# Configure CORS settings
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:3000"],  # Adjust with your frontend URL
+    allow_origins=["http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -31,8 +29,6 @@ def ping():
     """Health check."""
     return {"ping": "pong!"}
 
-
-# Define the path to your GeoJSON file
 geojson_file_path = Path("/home/hurr_son/repos/geo-object-search/backends/data/detections.geojson")
 
 from fastapi.responses import Response

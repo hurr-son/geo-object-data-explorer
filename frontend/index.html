@@ -37,7 +37,7 @@
             minZoom: 0,
             maxZoom: 20,
             attribution: 'NOAA Office for Coastal Management © Data Source',
-            crossOrigin: "anonymous"
+            crossOrigin: True
         }).addTo(map);
 
         fetch("http://127.0.0.1:8000/geojson")
