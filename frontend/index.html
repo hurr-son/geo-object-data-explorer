@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet COG Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 600px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>COG Raster on Leaflet Map</h1>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/georaster"></script>
+    <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([27.900,  -82.453], 14); // Set zoom level as needed
+
+
+        // Add a base layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 20,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const tileLayer = L.tileLayer('http://127.0.0.1:8000/tiles/WebMercatorQuad/{z}/{x}/{y}.png?url=https://coastalimagery.blob.core.windows.net/digitalcoast/TampaBayFL_RGBN_2023_9995/357000e3090000n.tif&bidx=1&bidx=2&bidx=3', {
+            minZoom: 0,
+            maxZoom: 20,
+            attribution: '© Data Source',
+            crossOrigin: "anonymous"
+        }).addTo(map);
+        
+    </script>
+</body>
+</html>
