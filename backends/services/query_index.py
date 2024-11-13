@@ -46,7 +46,7 @@ def main():
 
     print("*" * 20)
 
-    k = 256
+    k = 512
 
     with torch.no_grad():
         embedding = dinov2_vits14(load_image(search_file).to(device))
