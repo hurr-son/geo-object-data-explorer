@@ -10,13 +10,11 @@ import sys
 import os
 import geopandas as gpd
 
-# Load the DINOv2 model
 dinov2_vits14 = torch.hub.load("facebookresearch/dinov2", "dinov2_vits14")
 device = torch.device('cuda' if torch.cuda.is_available() else "cpu")
 dinov2_vits14.to(device)
 dinov2_vits14.eval()
 
-# Define image transformations
 transform_image = T.Compose([
     T.Resize(244),
     T.CenterCrop(224),
@@ -39,7 +37,7 @@ def extract_uuid_from_filename(file_path: str) -> str:
     return uuid
 
 def main():
-    # Specify the query image path
+
     if len(sys.argv) != 2:
         print("Usage: python query_index.py <path_to_query_image>")
         sys.exit(1)
@@ -50,23 +48,18 @@ def main():
 
     k = 256
 
-    # Compute the embedding of the query image
     with torch.no_grad():
         embedding = dinov2_vits14(load_image(search_file).to(device))
         embedding_np = embedding.cpu().numpy()
 
-    # Load the index
     data_index = faiss.read_index("/home/hurr_son/repos/geo-object-data-explorer/backends/data/data.bin")
 
-    # Load the list of files from all_embeddings.json
     with open("/home/hurr_son/repos/geo-object-data-explorer/backends/data/all_embeddings.json", "r") as f:
         all_embeddings = json.load(f)
     files = list(all_embeddings.keys())
 
-    # Search the index
     indices = search_index(data_index, embedding_np, k=k)
 
-    # Extract UUIDs from filenames
     uuids = []
     print(f"Top {k} similar images:")
     for i in range(k):
@@ -78,10 +71,8 @@ def main():
         else:
             print(f"Rank {i+1}: No more results.")
 
-    # Load the detections.geojson using GeoPandas
     detections_gdf = gpd.read_file("/home/hurr_son/repos/geo-object-data-explorer/backends/data/detections.geojson")
 
-    # Ensure 'detection_id' is a column in the GeoDataFrame
     if 'detection_id' not in detections_gdf.columns:
         if 'properties' in detections_gdf.columns:
             detections_gdf['detection_id'] = detections_gdf['properties'].apply(lambda x: x['detection_id'])
@@ -89,10 +80,8 @@ def main():
             print("Error: 'detection_id' not found in GeoDataFrame.")
             sys.exit(1)
 
-    # Filter the GeoDataFrame based on detection_id
     filtered_gdf = detections_gdf[detections_gdf['detection_id'].isin(uuids)]
 
-    # Save the filtered GeoDataFrame to a new GeoJSON file
     filtered_gdf.to_file("/home/hurr_son/repos/geo-object-data-explorer/backends/data/topk_detections.geojson", driver="GeoJSON")
 
     print(f"Filtered GeoJSON saved to topk_detections.geojson")
