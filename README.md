@@ -26,7 +26,7 @@ Geo Object Data Explorer is a web application that allows users to visualize and
   - [Leaflet.js](https://leafletjs.com/) for map rendering
 - **Backend:**
   - [FastAPI](https://fastapi.tiangolo.com/) for API endpoints
-  - [DINOv2](https://dinov2.metademolab.com/) and DINOv2 for image embeddings
+  - [PyTorch](https://pytorch.org/) and DINOv2 for image embeddings
   - [FAISS](https://github.com/facebookresearch/faiss) for similarity search
   - [Geopandas](https://geopandas.org/) for geospatial data handling
   - [Titiler](https://github.com/developmentseed/titiler) for serving raster tiles
