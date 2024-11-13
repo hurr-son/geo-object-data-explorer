@@ -10,7 +10,7 @@
 
 ## Overview
 
-Geo Object Data Explorer is a web application that allows users to visualize and explore geospatial data, particularly focused on detecting and displaying objects using advanced image embeddings and similarity search. The application combines a Leaflet.js map interface with a backend powered by FastAPI and PyTorch models.
+Geo Object Data Explorer is a web application that allows users to visualize and explore geospatial data, particularly focused on detecting and displaying objects using image embeddings and similarity search. The application combines a Leaflet.js map interface with a backend powered by FastAPI and PyTorch models.
 
 ## Features
 
