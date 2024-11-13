@@ -7,7 +7,7 @@ import rasterio
 from pathlib import Path
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 app = FastAPI(title="My simple app")
 
@@ -29,7 +29,7 @@ def ping():
     """Health check."""
     return {"ping": "pong!"}
 
-geojson_file_path = Path("/home/hurr_son/repos/geo-object-search/backends/data/detections.geojson")
+geojson_file_path = Path("/home/hurr_son/repos/geo-object-data-explorer/backends/data/detections.geojson")
 
 from fastapi.responses import Response
 
@@ -37,6 +37,17 @@ from fastapi.responses import Response
 async def get_geojson():
     if geojson_file_path.exists():
         with geojson_file_path.open() as f:
+            data = f.read()
+        return Response(content=data, media_type="application/geo+json")
+    else:
+        return JSONResponse(content={"error": "GeoJSON file not found"}, status_code=404)
+    
+topk_geojson_path = Path('/home/hurr_son/repos/geo-object-data-explorer/backends/data/topk_detections.geojson')
+
+@app.get("/topk_geojson")
+async def get_geojson():
+    if topk_geojson_path.exists():
+        with topk_geojson_path.open() as f:
             data = f.read()
         return Response(content=data, media_type="application/geo+json")
     else:

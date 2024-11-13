@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leaflet COG Map</title>
+    <title>Geo Object Data Explorer</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
     <style>
         #map {
@@ -40,7 +40,8 @@
 
         }).addTo(map);
 
-        fetch("http://127.0.0.1:8000/geojson")
+        
+        fetch("http://127.0.0.1:8000/topk_geojson")
         .then(response => response.json())
         .then(data => {
             console.log("GeoJSON Data:", data);
@@ -48,15 +49,18 @@
             const geoJsonLayer = L.geoJSON(data, {
                 style: function (feature) {
                     return {
-                        color: 'red',
+                        color: '#fa0ffa',
                         weight: 1,
                         opacity: 1,
-                        fillOpacity: 0
+                        fillOpacity: .1
                     };
                 }
             }).addTo(map);
         })
         .catch(error => console.error("Error loading GeoJSON:", error));
+
+        
+        
         
     </script>
 </body>
