@@ -37,6 +37,7 @@ This project is licensed under the MIT License.
 
 ## Acknowledgments
 
-- [Facebook AI Research](https://ai.facebook.com/) for the DINOv2 model.
+- Inspired by [Image Retrieval with DINOv2](https://github.com/roboflow/notebooks/blob/main/notebooks/dinov2-image-retrieval.ipynb) Roboflow Notebook
+- [Facebook AI Research](https://ai.facebook.com/) for the DINOv2 model and FAISS.
 - [OpenStreetMap Contributors](https://www.openstreetmap.org/copyright) for map tiles.
 - [NOAA Office for Coastal Management](https://coast.noaa.gov/) for geospatial data.
