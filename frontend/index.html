@@ -5,18 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geo Object Data Explorer</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
     <style>
         #map {
-            height: 90vh;
+            height: 80vh;
             width: 100%;
+        }
+        #queryButton {
+            margin: 10px;
         }
     </style>
 </head>
 <body>
     <h1>Geo Object Data Explorer</h1>
     <div id="map"></div>
+    <button id="queryButton">Query</button>
 
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
     <script src="https://unpkg.com/georaster"></script>
     <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
     <script src="https://unpkg.com/geojson-vt/geojson-vt.js"></script>
@@ -25,7 +31,7 @@
     <link href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css' rel='stylesheet' />
 
     <script>
-        var map = L.map('map').setView([27.900,  -82.453], 14);
+        var map = L.map('map').setView([27.900, -82.453], 14);
         map.addControl(new L.Control.Fullscreen());
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -37,31 +43,101 @@
             minZoom: 0,
             maxZoom: 20,
             attribution: 'NOAA Office for Coastal Management © Data Source'
-
         }).addTo(map);
 
-        
+        var drawnItems = new L.FeatureGroup();
+        map.addLayer(drawnItems);
+
+        var drawControl = new L.Control.Draw({
+            edit: {
+                featureGroup: drawnItems,
+                edit: false, 
+                remove: false 
+            },
+            draw: {
+                polygon: false,
+                polyline: false,
+                rectangle: true,
+                circle: false,
+                marker: false,
+                circlemarker: false
+            }
+        });
+        map.addControl(drawControl);
+
+        var drawnRectangle = null;
+
+        map.on(L.Draw.Event.CREATED, function (event) {
+            var layer = event.layer;
+    
+            if (drawnRectangle) {
+                drawnItems.removeLayer(drawnRectangle);
+            }
+            drawnRectangle = layer;
+            drawnItems.addLayer(drawnRectangle);
+        });
+
+       
+        document.getElementById('queryButton').addEventListener('click', function () {
+            if (drawnRectangle) {
+               
+                var rectangleGeoJSON = drawnRectangle.toGeoJSON();
+
+              
+                fetch('http://127.0.0.1:8000/query', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/geo+json'
+                    },
+                    body: JSON.stringify(rectangleGeoJSON)
+                })
+                .then(response => response.json())
+                .then(data => {
+                 
+                    console.log('Query response:', data);
+
+                
+                    if (window.geoJsonLayer) {
+                        map.removeLayer(window.geoJsonLayer);
+                    }
+
+                    window.geoJsonLayer = L.geoJSON(data, {
+                        style: function (feature) {
+                            return {
+                                color: '#fa0ffa',
+                                weight: 1,
+                                opacity: 1,
+                                fillOpacity: 0.1
+                            };
+                        }
+                    }).addTo(map);
+
+                
+                    map.fitBounds(window.geoJsonLayer.getBounds());
+                })
+                .catch(error => console.error('Error querying:', error));
+            } else {
+                alert('Please draw a rectangle first.');
+            }
+        });
+
         fetch("http://127.0.0.1:8000/topk_geojson")
         .then(response => response.json())
         .then(data => {
             console.log("GeoJSON Data:", data);
-     
+
             const geoJsonLayer = L.geoJSON(data, {
                 style: function (feature) {
                     return {
                         color: '#fa0ffa',
                         weight: 1,
                         opacity: 1,
-                        fillOpacity: .1
+                        fillOpacity: 0.1
                     };
                 }
             }).addTo(map);
         })
         .catch(error => console.error("Error loading GeoJSON:", error));
-
-        
-        
-        
     </script>
 </body>
 </html>
