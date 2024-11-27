@@ -2,12 +2,6 @@
 
 **Note:** This project is a work in progress.
 
-### Features I would like to add
-
-- Query crop from map
-- Export labels + image chips for model training
-- Visualize inference on raster
-
 ## Overview
 
 Geo Object Data Explorer is a web application that allows users to visualize and explore geospatial data, particularly focused on detecting and displaying objects using image embeddings and similarity search. The application combines a Leaflet.js map interface with a backend powered by FastAPI and PyTorch models.
